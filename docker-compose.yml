@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+  bnmoboxd-soap-db:
+    image: mysql:latest
+    hostname: bnmoboxd-soap-db
+    healthcheck:
+      test: mysqladmin ping -h localhost -u${DB_USER} -p{DB_PASSWORD}
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: always
+    ports:
+      - "8005:3306"
+    volumes:
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - .env
+    networks:
+      - bnmoboxd-soap-service
+
+networks:
+  bnmoboxd-soap-service:
