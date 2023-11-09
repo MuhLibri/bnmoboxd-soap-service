@@ -37,6 +37,31 @@ public class SubscriptionRepository {
         }
     }
 
+    public List<Subscription> getAcceptedSubscriptions(int subCuratorId) {
+        try (Connection connection = Database.getConnection()) {
+            String query = "SELECT * FROM subscriptions WHERE curator_id = ? AND status = 'ACCEPTED'";
+            List<Subscription> subscriptions = new ArrayList<>();
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, subCuratorId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        int curatorId = resultSet.getInt("curator_id");
+                        int subscriberId = resultSet.getInt("subscriber_id");
+                        String status = resultSet.getString("status");
+
+                        Subscription subscription = new Subscription(curatorId, subscriberId, status);
+                        subscriptions.add(subscription);
+                    }
+                }
+                return subscriptions;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /*public static void main(String[] args) {
         try {
             SubscriptionRepository rep = new SubscriptionRepository();
