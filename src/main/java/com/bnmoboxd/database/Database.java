@@ -23,9 +23,9 @@ public class Database {
 
     public static Connection getConnection() throws SQLException {
         String dbUrl = String.format("jdbc:mysql://%s:%d/%s" , MYSQL_HOST, MYSQL_PORT, MYSQL_DATABASE);
-        System.out.println(dbUrl);
+        /*System.out.println(dbUrl);
         System.out.println(MYSQL_USER);
-        System.out.println(MYSQL_PASSWORD);
+        System.out.println(MYSQL_PASSWORD);*/
         return DriverManager.getConnection(dbUrl, MYSQL_USER, MYSQL_PASSWORD);
     }
 }

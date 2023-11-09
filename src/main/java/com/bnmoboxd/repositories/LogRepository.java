@@ -31,8 +31,8 @@ public class LogRepository {
 
                     Log log = new Log(id, description, endpoint, clientIp, requestTimestamp, soapRequest);
                     logs.add(log);
-                    System.out.println(log.getId());
-                    System.out.println(log.getDescription());
+                    /*System.out.println(log.getId());
+                    System.out.println(log.getDescription());*/
                 }
             }
             return logs;
@@ -45,12 +45,12 @@ public class LogRepository {
     /*
     * Function to test the log repository
     * */
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         try {
             LogRepository logRepository = new LogRepository();
             logRepository.getAllLogs();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
