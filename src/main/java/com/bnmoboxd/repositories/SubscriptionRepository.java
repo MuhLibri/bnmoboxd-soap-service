@@ -3,6 +3,7 @@ package com.bnmoboxd.repositories;
 import com.bnmoboxd.database.Database;
 import com.bnmoboxd.models.Subscription;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,25 @@ public class SubscriptionRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean addSubscription(Subscription subscription) {
+        try (Connection connection = Database.getConnection()) {
+            String query = "INSERT INTO subscriptions VALUES (?, ?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, subscription.getCuratorId());
+                statement.setInt(2, subscription.getSubscriberId());
+                statement.setString(3, subscription.getStatus());
+
+                // Will fail if a subscription already exists
+                int rowCount = statement.executeUpdate();
+                return rowCount > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
