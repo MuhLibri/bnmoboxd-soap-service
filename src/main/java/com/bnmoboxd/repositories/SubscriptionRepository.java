@@ -82,6 +82,24 @@ public class SubscriptionRepository {
         }
     }
 
+    public boolean updateSubscriptionStatus(Subscription subscription) {
+        try (Connection connection = Database.getConnection()) {
+            String query = "UPDATE subscriptions SET status = ? WHERE curator_id = ? AND subscriber_id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, subscription.getStatus());
+                statement.setInt(2, subscription.getCuratorId());
+                statement.setInt(3, subscription.getSubscriberId());
+
+                int rowCount = statement.executeUpdate();
+                return rowCount > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /*public static void main(String[] args) {
         try {
             SubscriptionRepository rep = new SubscriptionRepository();

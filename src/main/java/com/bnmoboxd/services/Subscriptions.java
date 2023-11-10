@@ -47,4 +47,23 @@ public class Subscriptions {
         // TODO: Check if the corresponding user IDs exist
         return subscriptions.addSubscription(new Subscription(curatorId, subscriberId, status));
     }
+
+    @WebMethod(operationName = "update")
+    @WebResult(name = "success")
+    public boolean update(
+            @WebParam(name = "curator_id")
+            @XmlElement(required = true)
+            int curatorId,
+
+            @WebParam(name = "subscriber_id")
+            @XmlElement(required = true)
+            int subscriberId,
+
+            @WebParam(name = "new_status")
+            @XmlElement(required = true)
+            String status
+    ) {
+        // TODO: Check if the corresponding user IDs exist
+        return subscriptions.updateSubscriptionStatus(new Subscription(curatorId, subscriberId, status));
+    }
 }
