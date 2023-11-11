@@ -1,5 +1,6 @@
 package com.bnmoboxd.models;
 
+import com.bnmoboxd.struct.SubscriptionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +13,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @XmlRootElement
 public class Subscription {
-    @XmlElement(name = "curator_id")
-    private int curatorId;
-    @XmlElement(name = "subscriber_id")
-    private int subscriberId;
-
-    // TODO: Switch to enum?
+    @XmlElement(name = "curator_username")
+    private String curatorUsername;
+    @XmlElement(name = "subscriber_username")
+    private String subscriberUsername;
     @XmlElement(name = "status")
-    private String status; // PENDING, ACCEPTED, REJECTED
+    private SubscriptionStatus status;
 }
