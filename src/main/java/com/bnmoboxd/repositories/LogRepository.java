@@ -13,15 +13,15 @@ import java.util.List;
 public class LogRepository {
     public List<Log> getAllLogs() {
         /*
-        * Could be improved to be tidier
-        * The try catch block isn't very nice looking ?
-        * */
-        try (Connection connection = Database.getConnection()) {
+         * Could be improved to be tidier
+         * The try catch block isn't very nice looking ?
+         * */
+        try(Connection connection = Database.getConnection()) {
             String query = "SELECT * FROM logs";
             List<Log> logs = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(query);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
+            try(PreparedStatement statement = connection.prepareStatement(query);
+                ResultSet resultSet = statement.executeQuery()) {
+                while(resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String description = resultSet.getString("description");
                     String endpoint = resultSet.getString("endpoint");
@@ -36,21 +36,9 @@ public class LogRepository {
                 }
             }
             return logs;
-        } catch (SQLException e) {
+        } catch(SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    /*
-    * Function to test the log repository
-    * */
-    /*public static void main(String[] args){
-        try {
-            LogRepository logRepository = new LogRepository();
-            logRepository.getAllLogs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 }
