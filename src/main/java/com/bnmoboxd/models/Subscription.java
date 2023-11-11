@@ -13,9 +13,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NoArgsConstructor
 @XmlRootElement
 public class Subscription {
-    @XmlElement(name = "curator_username")
+    @XmlElement(name = "curatorUsername")
     private String curatorUsername;
-    @XmlElement(name = "subscriber_username")
+    @XmlElement(name = "subscriberUsername")
     private String subscriberUsername;
     @XmlElement(name = "status")
     private SubscriptionStatus status;

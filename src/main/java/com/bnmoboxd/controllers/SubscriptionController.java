@@ -41,7 +41,7 @@ public class SubscriptionController {
     @WebMethod(operationName = "count")
     @WebResult(name = "response")
     public Integer count(
-        @WebParam(name = "curator_username")
+        @WebParam(name = "curatorUsername")
         @XmlElement(required = true)
         String curatorUsername
     ) {
@@ -55,11 +55,11 @@ public class SubscriptionController {
     @WebMethod(operationName = "add")
     @WebResult(name = "response")
     public Boolean add(
-        @WebParam(name = "curator_username")
+        @WebParam(name = "curatorUsername")
         @XmlElement(required = true)
         String curatorUsername,
 
-        @WebParam(name = "subscriber_username")
+        @WebParam(name = "subscriberUsername")
         @XmlElement(required = true)
         String subscriberUsername,
 
@@ -77,15 +77,15 @@ public class SubscriptionController {
     @WebMethod(operationName = "update")
     @WebResult(name = "response")
     public Boolean update(
-        @WebParam(name = "curator_username")
+        @WebParam(name = "curatorUsername")
         @XmlElement(required = true)
         String curatorUsername,
 
-        @WebParam(name = "subscriber_username")
+        @WebParam(name = "subscriberUsername")
         @XmlElement(required = true)
         String subscriberUsername,
 
-        @WebParam(name = "new_status")
+        @WebParam(name = "status")
         @XmlElement(required = true)
         String status
     ) {
