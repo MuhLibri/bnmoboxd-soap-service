@@ -1,10 +1,12 @@
 package com.bnmoboxd.controllers;
 
 import com.bnmoboxd.middlewares.AuthMiddleware;
+import com.bnmoboxd.middlewares.LoggingMiddleware;
 import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
 import com.bnmoboxd.struct.Pagination;
+import com.bnmoboxd.struct.Pair;
 import com.bnmoboxd.struct.SubscriptionStatus;
 
 import javax.annotation.Resource;
@@ -34,6 +36,11 @@ public class SubscriptionController {
         Integer take
     ) {
         if(new AuthMiddleware(serviceContext).execute()) {
+            new LoggingMiddleware(serviceContext,
+                new Pair<>("endpoint", "/subscription"),
+                new Pair<>("page", page),
+                new Pair<>("take", take)
+            ).execute();
             Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
             return subscriptionService.getSubscriptions(null, pagination);
         } else {
@@ -49,6 +56,10 @@ public class SubscriptionController {
         String curatorUsername
     ) {
         if(new AuthMiddleware(serviceContext).execute() && curatorUsername != null) {
+            new LoggingMiddleware(serviceContext,
+                new Pair<>("endpoint", "/subscription"),
+                new Pair<>("curatorUsername", curatorUsername)
+            ).execute();
             return subscriptionService.getSubscriptions(new SubscriptionRepository.Filter(
                 curatorUsername,
                 null,
@@ -79,6 +90,12 @@ public class SubscriptionController {
             && subscriberUsername != null
             && status != null
         ) {
+            new LoggingMiddleware(serviceContext,
+                new Pair<>("endpoint", "/subscription"),
+                new Pair<>("curatorUsername", curatorUsername),
+                new Pair<>("subscriberUsername", subscriberUsername),
+                new Pair<>("status", status)
+            ).execute();
             return subscriptionService.addSubscription(
                 curatorUsername,
                 subscriberUsername,
@@ -109,6 +126,12 @@ public class SubscriptionController {
             && subscriberUsername != null
             && status != null
         ) {
+            new LoggingMiddleware(serviceContext,
+                new Pair<>("endpoint", "/subscription"),
+                new Pair<>("curatorUsername", curatorUsername),
+                new Pair<>("subscriberUsername", subscriberUsername),
+                new Pair<>("status", status)
+            ).execute();
             try {
                 SubscriptionStatus newStatus = SubscriptionStatus.valueOf(status);
                 return subscriptionService.updateSubscription(
