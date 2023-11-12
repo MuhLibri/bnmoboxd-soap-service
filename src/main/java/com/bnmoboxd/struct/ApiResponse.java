@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.*;
 
+// TODO: Either use or remove ApiResponse
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

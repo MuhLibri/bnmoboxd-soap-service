@@ -4,10 +4,8 @@ import com.bnmoboxd.middlewares.AuthMiddleware;
 import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
-import com.bnmoboxd.struct.ApiResponse;
-import com.bnmoboxd.struct.ResponseStatus;
+import com.bnmoboxd.struct.Pagination;
 import com.bnmoboxd.struct.SubscriptionStatus;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.annotation.Resource;
 import javax.jws.*;
@@ -18,21 +16,26 @@ import java.util.List;
 @WebService
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;
-    private final SubscriptionRepository subscriptionRepository;
     @Resource
     private WebServiceContext serviceContext;
 
     // TODO: Logging
     public SubscriptionController() {
         subscriptionService = new SubscriptionService();
-        subscriptionRepository = new SubscriptionRepository();
     }
 
     @WebMethod(operationName = "getAll")
     @WebResult(name = "response")
-    public List<Subscription> getAll() {
+    public List<Subscription> getAll(
+        @WebParam(name = "page")
+        Integer page,
+
+        @WebParam(name = "take")
+        Integer take
+    ) {
         if(new AuthMiddleware(serviceContext).execute()) {
-            return subscriptionService.getAllSubscriptions();
+            Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
+            return subscriptionService.getSubscriptions(null, pagination);
         } else {
             return null;
         }
@@ -45,8 +48,12 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String curatorUsername
     ) {
-        if(new AuthMiddleware(serviceContext).execute()) {
-            return subscriptionRepository.getAcceptedSubscriptions(curatorUsername).size();
+        if(new AuthMiddleware(serviceContext).execute() && curatorUsername != null) {
+            return subscriptionService.getSubscriptions(new SubscriptionRepository.Filter(
+                curatorUsername,
+                null,
+                SubscriptionStatus.ACCEPTED
+            )).size();
         } else {
             return null;
         }
@@ -67,8 +74,16 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String status
     ) {
-        if(new AuthMiddleware(serviceContext).execute()) {
-            return subscriptionRepository.addSubscription(new Subscription(curatorUsername, subscriberUsername, SubscriptionStatus.valueOf(status)));
+        if(new AuthMiddleware(serviceContext).execute()
+            && curatorUsername != null
+            && subscriberUsername != null
+            && status != null
+        ) {
+            return subscriptionService.addSubscription(
+                curatorUsername,
+                subscriberUsername,
+                SubscriptionStatus.valueOf(status)
+            );
         } else {
             return null;
         }
@@ -89,8 +104,22 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String status
     ) {
-        if(new AuthMiddleware(serviceContext).execute()) {
-            return subscriptionRepository.updateSubscriptionStatus(new Subscription(curatorUsername, subscriberUsername, SubscriptionStatus.valueOf(status)));
+        if(new AuthMiddleware(serviceContext).execute()
+            && curatorUsername != null
+            && subscriberUsername != null
+            && status != null
+        ) {
+            try {
+                SubscriptionStatus newStatus = SubscriptionStatus.valueOf(status);
+                return subscriptionService.updateSubscription(
+                    curatorUsername,
+                    subscriberUsername,
+                    newStatus
+                );
+            } catch(IllegalArgumentException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
             return null;
         }
