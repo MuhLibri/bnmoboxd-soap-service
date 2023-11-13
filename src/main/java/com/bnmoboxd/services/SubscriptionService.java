@@ -1,5 +1,6 @@
 package com.bnmoboxd.services;
 
+import com.bnmoboxd.clients.PhpApi;
 import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.struct.Pagination;
@@ -27,6 +28,8 @@ public class SubscriptionService {
     }
 
     public boolean updateSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
-        return subscriptionRepository.updateSubscription(curatorUsername, subscriberUsername, status);
+        boolean success = subscriptionRepository.updateSubscription(curatorUsername, subscriberUsername, status);
+        PhpApi.updateSubscription(curatorUsername, subscriberUsername, status);
+        return success;
     }
 }
