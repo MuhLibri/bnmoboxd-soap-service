@@ -4,6 +4,7 @@ import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
 import com.bnmoboxd.struct.Pagination;
+import com.bnmoboxd.struct.SubscriptionPage;
 import com.bnmoboxd.struct.SubscriptionStatus;
 
 import javax.annotation.Resource;
@@ -25,7 +26,7 @@ public class SubscriptionController {
 
     @WebMethod(operationName = "getAll")
     @WebResult(name = "response")
-    public List<Subscription> getAll(
+    public SubscriptionPage getAll(
         @WebParam(name = "page")
         Integer page,
 
@@ -33,7 +34,7 @@ public class SubscriptionController {
         Integer take
     ) {
         Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
-        return subscriptionService.getSubscriptions(null, pagination);
+        return new SubscriptionPage(subscriptionService.getSubscriptions(null, pagination));
     }
 
     @WebMethod(operationName = "count")
