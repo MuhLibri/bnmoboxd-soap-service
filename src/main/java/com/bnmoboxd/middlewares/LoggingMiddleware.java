@@ -2,7 +2,7 @@ package com.bnmoboxd.middlewares;
 import com.bnmoboxd.core.Endpoints;
 import com.bnmoboxd.repositories.LogRepository;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.xml.internal.ws.developer.JAXWSProperties;
+import com.sun.xml.ws.developer.JAXWSProperties;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

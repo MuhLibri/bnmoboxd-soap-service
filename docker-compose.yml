@@ -17,7 +17,19 @@ services:
     env_file:
       - .env
     networks:
-      - bnmoboxd-soap-service
+      - bnmoboxd-soap
+  bnmoboxd-soap-service:
+    container_name: bnmoboxd-soap
+    build: .
+    hostname: bnmoboxd-soap
+    env_file: .env
+    ports:
+      - "9000:9000"
+    depends_on:
+      bnmoboxd-soap-db:
+        condition: service_healthy
+    networks:
+      - bnmoboxd-soap
 
 networks:
-  bnmoboxd-soap-service:
+  bnmoboxd-soap:
