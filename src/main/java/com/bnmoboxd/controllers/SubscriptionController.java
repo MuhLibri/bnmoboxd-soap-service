@@ -1,12 +1,9 @@
 package com.bnmoboxd.controllers;
 
-import com.bnmoboxd.middlewares.AuthMiddleware;
-import com.bnmoboxd.middlewares.LoggingMiddleware;
 import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
 import com.bnmoboxd.struct.Pagination;
-import com.bnmoboxd.struct.Pair;
 import com.bnmoboxd.struct.SubscriptionStatus;
 
 import javax.annotation.Resource;
@@ -16,12 +13,12 @@ import javax.xml.ws.WebServiceContext;
 import java.util.List;
 
 @WebService
+@HandlerChain(file = "SubscriptionHandlers.xml")
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     @Resource
     private WebServiceContext serviceContext;
 
-    // TODO: Logging
     public SubscriptionController() {
         subscriptionService = new SubscriptionService();
     }
@@ -35,17 +32,8 @@ public class SubscriptionController {
         @WebParam(name = "take")
         Integer take
     ) {
-        if(new AuthMiddleware(serviceContext).execute()) {
-            new LoggingMiddleware(serviceContext,
-                new Pair<>("endpoint", "/subscription"),
-                new Pair<>("page", page),
-                new Pair<>("take", take)
-            ).execute();
-            Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
-            return subscriptionService.getSubscriptions(null, pagination);
-        } else {
-            return null;
-        }
+        Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
+        return subscriptionService.getSubscriptions(null, pagination);
     }
 
     @WebMethod(operationName = "count")
@@ -55,19 +43,12 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String curatorUsername
     ) {
-        if(new AuthMiddleware(serviceContext).execute() && curatorUsername != null) {
-            new LoggingMiddleware(serviceContext,
-                new Pair<>("endpoint", "/subscription"),
-                new Pair<>("curatorUsername", curatorUsername)
-            ).execute();
-            return subscriptionService.getSubscriptions(new SubscriptionRepository.Filter(
-                curatorUsername,
-                null,
-                SubscriptionStatus.ACCEPTED
-            )).size();
-        } else {
-            return null;
-        }
+        return subscriptionService.getSubscriptions(new SubscriptionRepository.Filter(
+            curatorUsername,
+            null,
+            SubscriptionStatus.ACCEPTED
+        )).size();
+
     }
 
     @WebMethod(operationName = "add")
@@ -85,25 +66,11 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String status
     ) {
-        if(new AuthMiddleware(serviceContext).execute()
-            && curatorUsername != null
-            && subscriberUsername != null
-            && status != null
-        ) {
-            new LoggingMiddleware(serviceContext,
-                new Pair<>("endpoint", "/subscription"),
-                new Pair<>("curatorUsername", curatorUsername),
-                new Pair<>("subscriberUsername", subscriberUsername),
-                new Pair<>("status", status)
-            ).execute();
-            return subscriptionService.addSubscription(
-                curatorUsername,
-                subscriberUsername,
-                SubscriptionStatus.valueOf(status)
-            );
-        } else {
-            return null;
-        }
+        return subscriptionService.addSubscription(
+            curatorUsername,
+            subscriberUsername,
+            SubscriptionStatus.valueOf(status)
+        );
     }
 
     @WebMethod(operationName = "update")
@@ -121,30 +88,16 @@ public class SubscriptionController {
         @XmlElement(required = true)
         String status
     ) {
-        if(new AuthMiddleware(serviceContext).execute()
-            && curatorUsername != null
-            && subscriberUsername != null
-            && status != null
-        ) {
-            new LoggingMiddleware(serviceContext,
-                new Pair<>("endpoint", "/subscription"),
-                new Pair<>("curatorUsername", curatorUsername),
-                new Pair<>("subscriberUsername", subscriberUsername),
-                new Pair<>("status", status)
-            ).execute();
-            try {
-                SubscriptionStatus newStatus = SubscriptionStatus.valueOf(status);
-                return subscriptionService.updateSubscription(
-                    curatorUsername,
-                    subscriberUsername,
-                    newStatus
-                );
-            } catch(IllegalArgumentException e) {
-                e.printStackTrace();
-                return null;
-            }
-        } else {
-            return null;
+        try {
+            SubscriptionStatus newStatus = SubscriptionStatus.valueOf(status);
+            return subscriptionService.updateSubscription(
+                curatorUsername,
+                subscriberUsername,
+                newStatus
+            );
+        } catch(IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

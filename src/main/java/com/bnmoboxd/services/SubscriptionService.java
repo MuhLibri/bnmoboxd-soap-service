@@ -23,18 +23,10 @@ public class SubscriptionService {
     }
 
     public boolean addSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
-        return subscriptionRepository.addSubscription(new Subscription(
-            curatorUsername,
-            subscriberUsername,
-            status
-        ));
+        return subscriptionRepository.addSubscription(curatorUsername, subscriberUsername, status);
     }
 
     public boolean updateSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
-        return subscriptionRepository.updateSubscription(new Subscription(
-            curatorUsername,
-            subscriberUsername,
-            status
-        ));
+        return subscriptionRepository.updateSubscription(curatorUsername, subscriberUsername, status);
     }
 }

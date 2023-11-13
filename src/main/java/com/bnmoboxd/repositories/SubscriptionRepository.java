@@ -65,16 +65,16 @@ public class SubscriptionRepository {
         }
     }
 
-    public boolean addSubscription(Subscription subscription) {
+    public boolean addSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
         try(Connection connection = Database.getConnection()) {
             String query = "INSERT INTO subscriptions VALUES (?, ?, ?)";
 
             try(PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, subscription.getCuratorUsername());
-                statement.setString(2, subscription.getSubscriberUsername());
-                statement.setString(3, subscription.getStatus().toString());
+                statement.setString(1, curatorUsername);
+                statement.setString(2, subscriberUsername);
+                statement.setString(3, status.toString());
 
-                // Will fail if a subscription already exists
+                // Will return 0 if a subscription already exists
                 int rowCount = statement.executeUpdate();
                 return rowCount > 0;
             }
@@ -84,14 +84,14 @@ public class SubscriptionRepository {
         }
     }
 
-    public boolean updateSubscription(Subscription subscription) {
+    public boolean updateSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
         try(Connection connection = Database.getConnection()) {
             String query = "UPDATE subscriptions SET status = ? WHERE curator_username = ? AND subscriber_username = ?";
 
             try(PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, subscription.getStatus().toString());
-                statement.setString(2, subscription.getCuratorUsername());
-                statement.setString(3, subscription.getSubscriberUsername());
+                statement.setString(1, status.toString());
+                statement.setString(2, curatorUsername);
+                statement.setString(3, subscriberUsername);
 
                 int rowCount = statement.executeUpdate();
                 return rowCount > 0;

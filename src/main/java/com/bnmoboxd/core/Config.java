@@ -1,4 +1,4 @@
-package com.bnmoboxd.config;
+package com.bnmoboxd.core;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

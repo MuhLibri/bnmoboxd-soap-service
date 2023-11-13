@@ -1,54 +1,70 @@
 package com.bnmoboxd.middlewares;
-
-import com.bnmoboxd.struct.Pair;
+import com.bnmoboxd.core.Endpoints;
+import com.bnmoboxd.repositories.LogRepository;
+import com.sun.net.httpserver.HttpExchange;
 import com.sun.xml.internal.ws.developer.JAXWSProperties;
-import com.sun.xml.internal.ws.server.WSEndpointImpl;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import javax.xml.ws.WebServiceContext;
+import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class LoggingMiddleware implements Middleware {
-    private final WebServiceContext serviceContext;
-    private final Pair<String, Object>[] params;
+    private final SOAPMessageContext context;
+    private final LogRepository logRepository;
 
-    @SafeVarargs
-    public LoggingMiddleware(WebServiceContext serviceContext, Pair<String, Object>... params) {
-        this.serviceContext = serviceContext;
-        this.params = params;
+    public LoggingMiddleware(SOAPMessageContext context) {
+        this.context = context;
+        this.logRepository = new LogRepository();
     }
 
     @Override
     public boolean execute() {
-        // TODO: Do this the better way: call this from a Handler?
-        MessageContext msgContext = serviceContext.getMessageContext();
-        Map<String, Object> headers = (Map<String, Object>) msgContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+        String endpoint = Endpoints.getEndpoint(String.format("com.bnmoboxd.controllers.%s",
+            ((QName) context.get(MessageContext.WSDL_INTERFACE)).getLocalPart()
+        ));
+        String method = ((QName) context.get(MessageContext.WSDL_OPERATION)).getLocalPart();
+        HttpExchange exchange = (HttpExchange) context.get(JAXWSProperties.HTTP_EXCHANGE);
+        String client = String.format("%s:%s", exchange.getRemoteAddress().getAddress(), exchange.getRemoteAddress().getPort());
+        String params = buildParamString(context.getMessage());
 
-        try {
-            String endpoint = (String) getParam("endpoint");
-            String method = msgContext.get(MessageContext.WSDL_OPERATION).toString();
-            method = method.substring(method.indexOf('}') + 1);
+        logRepository.addLog(params, endpoint, client, method);
 
-            StringBuilder paramsStr = new StringBuilder();
-            for(Pair<String, Object> param : params) {
-                if(paramsStr.length() > 0) paramsStr.append(';');
-                paramsStr.append(String.format(" %s: %s", param.getFirst(), param.getSecond()));
-            }
-
-            System.out.printf("[%s %8s]%s%n", LocalDateTime.now(), method, paramsStr);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        System.out.printf("[%s %16s: %-8s] %-20s client: %s; %s%n",
+            LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), client, params
+        );
         return true;
     }
 
-    private Object getParam(String key) {
+    private String buildParamString(SOAPMessage message) {
+        try {
+            StringBuilder str = new StringBuilder();
+
+            SOAPBody body = context.getMessage().getSOAPBody();
+            NodeList children = body.getFirstChild().getChildNodes();
+
+            for(int i = 0; i < children.getLength(); i++) {
+                Node child = children.item(i);
+                if(str.length() > 0) str.append(' ');
+                str.append(String.format("%s: %s;", child.getLocalName(), child.getTextContent()));
+            }
+            return str.toString();
+        } catch(SOAPException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    /*private Object getParam(String key) {
         for(Pair<String, Object> param : params) {
             if(param.getFirst().equals(key)) return param.getSecond();
         }
         return null;
-    }
+    }*/
 }

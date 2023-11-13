@@ -1,6 +1,6 @@
 package com.bnmoboxd.database;
 
-import com.bnmoboxd.config.Config;
+import com.bnmoboxd.core.Config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

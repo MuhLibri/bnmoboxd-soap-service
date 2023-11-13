@@ -1,14 +1,13 @@
 package com.bnmoboxd;
 
 import com.bnmoboxd.controllers.SubscriptionController;
-
-import javax.xml.ws.*;
+import com.bnmoboxd.core.Endpoints;
 
 public class Main {
     public static void main(String[] args){
         try {
-            Endpoint.publish("http://localhost:9000/subscription", new SubscriptionController());
-            System.out.println("Server created at localhost:9000");
+            Endpoints.publish("/subscription", new SubscriptionController());
+            System.out.printf("Server created at %s%n", Endpoints.getHost());
         } catch (Exception e) {
             e.printStackTrace();
         }

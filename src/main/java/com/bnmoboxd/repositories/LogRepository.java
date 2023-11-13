@@ -2,6 +2,7 @@ package com.bnmoboxd.repositories;
 
 import com.bnmoboxd.database.Database;
 import com.bnmoboxd.models.Log;
+import com.bnmoboxd.struct.SubscriptionStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,10 +13,6 @@ import java.util.List;
 
 public class LogRepository {
     public List<Log> getAllLogs() {
-        /*
-         * Could be improved to be tidier
-         * The try catch block isn't very nice looking ?
-         * */
         try(Connection connection = Database.getConnection()) {
             String query = "SELECT * FROM logs";
             List<Log> logs = new ArrayList<>();
@@ -31,14 +28,31 @@ public class LogRepository {
 
                     Log log = new Log(id, description, endpoint, clientIp, requestTimestamp, soapRequest);
                     logs.add(log);
-                    /*System.out.println(log.getId());
-                    System.out.println(log.getDescription());*/
                 }
             }
             return logs;
         } catch(SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean addLog(String description, String endpoint, String clientIp, String soapRequest) {
+        try(Connection connection = Database.getConnection()) {
+            String query = "INSERT INTO logs(description, endpoint, client_ip, soap_request) VALUES (?, ?, ?, ?)";
+
+            try(PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, description);
+                statement.setString(2, endpoint);
+                statement.setString(3, clientIp);
+                statement.setString(4, soapRequest);
+
+                int rowCount = statement.executeUpdate();
+                return rowCount > 0;
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
