@@ -1,24 +1,18 @@
 package com.bnmoboxd.controllers;
 
-import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
 import com.bnmoboxd.struct.Pagination;
 import com.bnmoboxd.struct.SubscriptionPage;
 import com.bnmoboxd.struct.SubscriptionStatus;
 
-import javax.annotation.Resource;
 import javax.jws.*;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.ws.WebServiceContext;
-import java.util.List;
 
 @WebService
 @HandlerChain(file = "SubscriptionHandlers.xml")
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;
-    @Resource
-    private WebServiceContext serviceContext;
 
     public SubscriptionController() {
         subscriptionService = new SubscriptionService();
