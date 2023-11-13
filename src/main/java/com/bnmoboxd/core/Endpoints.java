@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Endpoints {
-    private static final String host = "http://localhost:9000";
+    private static final String host = "http://0.0.0.0:9000";
 //    private static final Map<String, Object> endpoint2Executor = new HashMap<>();
     private static final Map<String, String> executor2Endpoint = new HashMap<>();
 
