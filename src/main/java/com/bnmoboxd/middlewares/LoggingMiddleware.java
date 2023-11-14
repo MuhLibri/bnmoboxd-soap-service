@@ -13,6 +13,7 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class LoggingMiddleware implements Middleware {
@@ -30,14 +31,14 @@ public class LoggingMiddleware implements Middleware {
             ((QName) context.get(MessageContext.WSDL_INTERFACE)).getLocalPart()
         ));
         String method = ((QName) context.get(MessageContext.WSDL_OPERATION)).getLocalPart();
-        HttpExchange exchange = (HttpExchange) context.get(JAXWSProperties.HTTP_EXCHANGE);
-        String client = String.format("%s:%s", exchange.getRemoteAddress().getAddress(), exchange.getRemoteAddress().getPort());
+        Map<String, Object> headers = (Map<String, Object>) context.get(MessageContext.HTTP_REQUEST_HEADERS);
+        String host = headers.get("Host").toString();
         String params = buildParamString(context.getMessage());
 
-        logRepository.addLog(params, endpoint, client, method);
+        logRepository.addLog(params, endpoint, host, method);
 
-        System.out.printf("[%s %16s: %-8s] %-20s client: %s; %s%n",
-            LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), client, params
+        System.out.printf("[%s] %16s: %-8s %-20s client: %s; %s%n",
+            LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), host, params
         );
         return true;
     }
