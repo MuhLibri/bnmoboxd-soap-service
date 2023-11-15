@@ -11,6 +11,7 @@ CREATE TABLE subscriptions (
     curator_username VARCHAR(255) NOT NULL,
     subscriber_username VARCHAR(255) NOT NULL,
     status enum('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (curator_username, subscriber_username)
 );
 

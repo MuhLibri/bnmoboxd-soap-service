@@ -1,5 +1,6 @@
 package com.bnmoboxd.controllers;
 
+import com.bnmoboxd.models.Subscription;
 import com.bnmoboxd.repositories.SubscriptionRepository;
 import com.bnmoboxd.services.SubscriptionService;
 import com.bnmoboxd.struct.Pagination;
@@ -8,6 +9,7 @@ import com.bnmoboxd.struct.SubscriptionStatus;
 
 import javax.jws.*;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 @WebService
 @HandlerChain(file = "SubscriptionHandlers.xml")
@@ -16,6 +18,24 @@ public class SubscriptionController {
 
     public SubscriptionController() {
         subscriptionService = new SubscriptionService();
+    }
+
+    @WebMethod(operationName = "get")
+    @WebResult(name = "response")
+    public Subscription get(
+        @WebParam(name = "curatorUsername")
+        @XmlElement(required = true)
+        String curatorUsername,
+
+        @WebParam(name = "subscriberUsername")
+        @XmlElement(required = true)
+        String subscriberUsername
+    ) {
+        List<Subscription> result = subscriptionService.getSubscriptions(new SubscriptionRepository.Filter(
+            curatorUsername,
+            subscriberUsername
+        ));
+        return !result.isEmpty() ? result.get(0) : null;
     }
 
     @WebMethod(operationName = "getAll")

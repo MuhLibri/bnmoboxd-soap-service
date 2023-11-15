@@ -24,7 +24,6 @@ public class AuthMiddleware implements Middleware {
 
         try {
             String apiKey = ((List<String>) headers.get("x-api-key")).get(0);
-            System.out.println(apiKey);
             boolean auth = apiKey != null && apiKey.equals(Config.get("SOAP_API_KEY"));
 
             String endpoint = Endpoints.getEndpoint(String.format("com.bnmoboxd.controllers.%s",

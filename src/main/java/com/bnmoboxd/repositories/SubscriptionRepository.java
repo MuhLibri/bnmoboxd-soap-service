@@ -19,8 +19,13 @@ public class SubscriptionRepository {
         try(Connection connection = Database.getConnection()) {
             List<Subscription> subscriptions = new ArrayList<>();
 
-            StringBuilder query = new StringBuilder("SELECT * FROM subscriptions");
+            // Base subscription query
+            StringBuilder query = new StringBuilder(
+                "SELECT curator_username, subscriber_username, status FROM subscriptions"
+            );
             List<String> params = new ArrayList<>();
+
+            // Add conditionals based on the given filter
             if(filter != null) {
                 if(filter.getCuratorUsername() != null) {
                     query.append(String.format(" %s curator_username = ?", "WHERE"));
@@ -35,7 +40,10 @@ public class SubscriptionRepository {
                     params.add(filter.getStatus().toString());
                 }
             }
+            // Add pagination query
             if(pagination != null) query.append(" LIMIT ? OFFSET ?");
+            // Sort by timestamp of creation
+            query.append(" ORDER BY created_at DESC");
 
             try(PreparedStatement statement = connection.prepareStatement(query.toString())) {
                 for(int i = 0; i < params.size(); i++) {
@@ -67,14 +75,25 @@ public class SubscriptionRepository {
 
     public boolean addSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
         try(Connection connection = Database.getConnection()) {
-            String query = "INSERT INTO subscriptions VALUES (?, ?, ?)";
+            // Check first if a row with matching keys already exists
+            String query = "SELECT * FROM subscriptions WHERE curator_username = ? AND subscriber_username = ?";
+            try(PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, curatorUsername);
+                statement.setString(2, subscriberUsername);
 
+                try(ResultSet resultSet = statement.executeQuery()) {
+                    // Bail if the query finds an already existing row
+                    if(resultSet.next()) return false;
+                }
+            }
+
+            // If no matching row is found, insert the new row
+            query = "INSERT INTO subscriptions(curator_username, subscriber_username, status) VALUES (?, ?, ?)";
             try(PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, curatorUsername);
                 statement.setString(2, subscriberUsername);
                 statement.setString(3, status.toString());
 
-                // Will return 0 if a subscription already exists
                 int rowCount = statement.executeUpdate();
                 return rowCount > 0;
             }
@@ -108,6 +127,10 @@ public class SubscriptionRepository {
             this.curatorUsername = curatorUsername;
             this.subscriberUsername = subscriberUsername;
             this.status = status != null ? SubscriptionStatus.valueOf(status) : null;
+        }
+
+        public Filter(String curatorUsername, String subscriberUsername) {
+            this(curatorUsername, subscriberUsername, (SubscriptionStatus) null);
         }
 
         public Filter(String curatorUsername, String subscriberUsername, @Nullable SubscriptionStatus status) {
