@@ -1,4 +1,5 @@
 package com.bnmoboxd.middlewares;
+import com.bnmoboxd.core.Config;
 import com.bnmoboxd.core.Endpoints;
 import com.bnmoboxd.repositories.LogRepository;
 import org.w3c.dom.Node;
@@ -11,6 +12,7 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
@@ -30,13 +32,22 @@ public class LoggingMiddleware implements Middleware {
         ));
         String method = ((QName) context.get(MessageContext.WSDL_OPERATION)).getLocalPart();
         Map<String, Object> headers = (Map<String, Object>) context.get(MessageContext.HTTP_REQUEST_HEADERS);
+        String apiKey = ((List<String>) headers.get("x-api-key")).get(0);
+        String source = "UNAUTHORIZED";
+        if (apiKey.equals(Config.get("SOAP_API_KEY_REST"))) {
+            source = "REST";
+        }
+        if (apiKey.equals(Config.get("SOAP_API_KEY_PHP"))) {
+            source = "PHP";
+        }
         String host = headers.get("Host").toString();
+        String client = "[" + source + "] " + host;
         String params = buildParamString(context.getMessage());
 
         logRepository.addLog(params, endpoint, host, method);
 
         System.out.printf("[%s] %16s: %-8s %-20s client: %s; %s%n",
-            LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), host, params
+            LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), client, params
         );
         return true;
     }

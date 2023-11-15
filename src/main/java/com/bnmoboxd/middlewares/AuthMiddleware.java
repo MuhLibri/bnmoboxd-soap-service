@@ -24,7 +24,9 @@ public class AuthMiddleware implements Middleware {
 
         try {
             String apiKey = ((List<String>) headers.get("x-api-key")).get(0);
-            boolean auth = apiKey != null && apiKey.equals(Config.get("SOAP_API_KEY"));
+            boolean auth =
+                    apiKey != null && (apiKey.equals(Config.get("SOAP_API_KEY_REST")) || apiKey.equals(Config.get(
+                            "SOAP_API_KEY_PHP")));
 
             String endpoint = Endpoints.getEndpoint(String.format("com.bnmoboxd.controllers.%s",
                 ((QName) context.get(MessageContext.WSDL_INTERFACE)).getLocalPart()
