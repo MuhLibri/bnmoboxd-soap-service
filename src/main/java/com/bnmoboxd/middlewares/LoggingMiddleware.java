@@ -44,7 +44,7 @@ public class LoggingMiddleware implements Middleware {
         String client = "[" + source + "] " + host;
         String params = buildParamString(context.getMessage());
 
-        logRepository.addLog(params, endpoint, host, method);
+        logRepository.addLog(params, endpoint, client, method);
 
         System.out.printf("[%s] %16s: %-8s %-20s client: %s; %s%n",
             LocalDateTime.now(), endpoint, method, getClass().getSimpleName(), client, params
