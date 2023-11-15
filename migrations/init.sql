@@ -27,7 +27,7 @@ VALUES
     ('curator1', 'user2', 'PENDING'),
     ('curator1', 'user3', 'ACCEPTED'),
     ('curator1', 'user4', 'PENDING'),
-    ('curator1', 'user4', 'ACCEPTED'),
+    ('curator1', 'user5', 'ACCEPTED'),
     ('curator1', 'user6', 'REJECTED'),
     ('curator2', 'user1', 'PENDING'),
     ('curator2', 'user4', 'REJECTED'),
