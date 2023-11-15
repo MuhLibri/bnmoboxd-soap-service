@@ -40,10 +40,10 @@ public class SubscriptionRepository {
                     params.add(filter.getStatus().toString());
                 }
             }
-            // Add pagination query
-            if(pagination != null) query.append(" LIMIT ? OFFSET ?");
             // Sort by timestamp of creation
             query.append(" ORDER BY created_at DESC");
+            // Add pagination query
+            if(pagination != null) query.append(" LIMIT ? OFFSET ?");
 
             try(PreparedStatement statement = connection.prepareStatement(query.toString())) {
                 for(int i = 0; i < params.size(); i++) {
