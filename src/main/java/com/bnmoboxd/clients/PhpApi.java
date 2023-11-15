@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class PhpApi implements AutoCloseable {
         params = new HashMap<>();
 
         URL apiUrl = new URL(Config.get("PHP_API_URL") + path);
-        String apiKey = Config.get("SOAP_API_KEY");
+        String apiKey = Config.get("PHP_API_KEY");
         connection = (HttpURLConnection) apiUrl.openConnection();
         connection.setRequestMethod(method);
         connection.setRequestProperty("X-Api-Key", apiKey);
@@ -66,7 +67,11 @@ public class PhpApi implements AutoCloseable {
                 while((line = br.readLine()) != null) {
                     response.append(line).append('\r');
                 }
-                return response.toString();
+                String responseStr = response.toString();
+                System.out.printf("[%s] %-20s Received response from PHP server: %s%n",
+                    LocalDateTime.now(), getClass().getSimpleName(), responseStr
+                );
+                return responseStr;
             }
         } catch(Exception e) {
             e.printStackTrace();
