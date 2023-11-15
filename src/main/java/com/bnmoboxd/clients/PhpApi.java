@@ -60,15 +60,19 @@ public class PhpApi implements AutoCloseable {
                 os.writeBytes(body);
             }
 
+            System.out.printf("[%s] %-8s PHP server response code: %s %s%n",
+                LocalDateTime.now(), getClass().getSimpleName(),
+                connection.getResponseCode(), connection.getResponseMessage()
+            );
             InputStream is = connection.getInputStream();
             try(BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 StringBuilder response = new StringBuilder();
                 String line;
                 while((line = br.readLine()) != null) {
-                    response.append(line).append('\r');
+                    response.append(line).append('\n');
                 }
                 String responseStr = response.toString();
-                System.out.printf("[%s] %-20s Received response from PHP server: %s%n",
+                System.out.printf("[%s] %-8s Received response from PHP server: %s%n",
                     LocalDateTime.now(), getClass().getSimpleName(), responseStr
                 );
                 return responseStr;

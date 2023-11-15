@@ -29,7 +29,7 @@ public class SubscriptionService {
 
     public boolean updateSubscription(String curatorUsername, String subscriberUsername, SubscriptionStatus status) {
         boolean success = subscriptionRepository.updateSubscription(curatorUsername, subscriberUsername, status);
-        PhpApi.updateSubscription(curatorUsername, subscriberUsername, status);
+        if(success) PhpApi.updateSubscription(curatorUsername, subscriberUsername, status);
         return success;
     }
 }
