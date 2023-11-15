@@ -16,9 +16,6 @@ import java.util.List;
 public class SubscriptionPage {
     @XmlElement(name = "subscriptions")
     private List<Subscription> subscriptions;
-
     @XmlElement(name = "count")
-    public int getCount() {
-        return subscriptions.size();
-    }
+    private int count;
 }

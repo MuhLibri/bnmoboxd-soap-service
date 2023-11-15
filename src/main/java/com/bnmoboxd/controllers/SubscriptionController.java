@@ -48,7 +48,8 @@ public class SubscriptionController {
         Integer take
     ) {
         Pagination pagination = page != null && take != null ? new Pagination(page, take) : null;
-        return new SubscriptionPage(subscriptionService.getSubscriptions(null, pagination));
+        int count = subscriptionService.getSubscriptions(null).size();
+        return new SubscriptionPage(subscriptionService.getSubscriptions(null, pagination), count);
     }
 
     @WebMethod(operationName = "count")
