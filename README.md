@@ -44,6 +44,7 @@ This service provides the following methods:
 
 ## Bonus
 1. Docker
+2. Email
 
 
 ## Authors
