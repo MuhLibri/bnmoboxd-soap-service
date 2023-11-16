@@ -54,7 +54,7 @@ This service provides the following methods:
 | Project Initialization | DB Seeding         | Subscription CRUD           |
 | DB Set Up              | Review and Testing | Auth Middleware             |
 | Docker                 |                    | Logging Middleware          |
-|                        |                    | PHP Client                  |
+| Email                  |                    | PHP Client                  |
 |                        |                    | Update subscriptions on PHP |
 
 
