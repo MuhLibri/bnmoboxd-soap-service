@@ -28,19 +28,19 @@ This service provides the following methods:
 4. Open terminal and run `docker compose up -d`
 
 ## Task
-| 13521044               | 13521047 | 13521107 |
-|------------------------|----------|----------|
-| Project Initialization |          |          |
-| DB Set Up              |          |          |
-| Docker                 |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
-|                        |          |          |
+| 13521044               | 13521047           | 13521107 |
+|------------------------|--------------------|----------|
+| Project Initialization | DB Seeding         |          |
+| DB Set Up              | Review and Testing |          |
+| Docker                 |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
+|                        |                    |          |
 
 
 ## Bonus
