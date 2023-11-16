@@ -5,6 +5,22 @@ This service should be used along with:
 - [BNMOBOXD REST](https://gitlab.informatika.org/if3110-2023-01-16/bnmoboxd-rest-service)
 - [BNMOBOXD App](https://gitlab.informatika.org/if3110-2023-01-16/bnmoboxd)
 
+## Database Schema
+| logs              |
+| ----------------- |
+| **id**            |
+| description       |
+| endpoint          |
+| client_ip         |
+| request_timestamp |
+| soap_request      |
+
+| subscriptions             |
+| ------------------------- |
+| **curator_username**      |
+| **subscriber_username**   |
+| status                    |
+| created_at                |
 
 ## Features
 This service provides the following methods:
