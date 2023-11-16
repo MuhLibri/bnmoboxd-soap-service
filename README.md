@@ -8,8 +8,13 @@ This service should be used along with:
 
 ## Features
 This service provides the following methods:
-
-
+| ENDPOINT      | NAME   | PARAMETERS                                        |
+|---------------|--------|---------------------------------------------------|
+| /subscription | get    | `curatorUsername`, `subscriberUsername`           |
+| /subscription | getAll | `page`, `take`                                    |
+| /subscription | count  | `curatorUsername`                                 |
+| /subscription | add    | `curatorUsername`, `subscriberUsername`, `status` |
+| /subscription | update | `curatorUsername`, `subscriberUsername`, `status` |
 
 ## Requirements
 1. Docker
@@ -28,10 +33,18 @@ This service provides the following methods:
 4. Open terminal and run `docker compose up -d`
 
 ## Task
+| 13521044               | 13521047           | 13521107                    |
+|------------------------|--------------------|-----------------------------|
+| Project Initialization | DB Seeding         | Subscription CRUD           |
+| DB Set Up              | Review and Testing | Auth Middleware             |
+| Docker                 |                    | Logging Middleware          |
+|                        |                    | PHP Client                  |
+|                        |                    | Update subscriptions on PHP |
 
 
 ## Bonus
 1. Docker
+2. Email
 
 
 ## Authors
@@ -40,3 +53,4 @@ This service provides the following methods:
 | Rachel Gabriela Chen           | 13521044 |
 | Muhammad Equilibrie Fajria     | 13521047 |
 | Jericho Russel Sebastian       | 13521107 |
+
