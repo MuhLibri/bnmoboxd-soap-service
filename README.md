@@ -31,7 +31,7 @@ This service provides the following methods:
 ## Running Application
 1. `cd` to repository's root
 2. Make a env file `.env.production`
-3. Fill the file `.env.production` referring to `env.example`, make sure to include the correct endpoint for the other services
+3. Fill the file `.env.production` referring to `env.example`, make sure to include the correct endpoint for the other services. Also don't forget to fill the `email sending` part
 4. Open terminal and run `docker compose up -d`
 
 ## Task
